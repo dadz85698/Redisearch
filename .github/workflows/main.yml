@@ -81,12 +81,11 @@ jobs:
         run: |
           git clone https://github.com/RedisAI/VectorSimilarity.git D:/a/Redisearch/Redisearch/deps/VectorSimilarity
 
-      # 10. 更新 MSYS2 并安装依赖项
+      # 10. 安装 Redisearch 依赖
       - name: Install Redisearch Dependencies
         run: |
-          # 安装 Boost 和 Hiredis 依赖
-          C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm mingw-w64-x86_64-boost mingw-w64-x86_64-hiredis"  # 安装 Boost 和 Hiredis
           C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -Syu --noconfirm"  # 更新 MSYS2
+          C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm mingw-w64-x86_64-boost mingw-w64-x86_64-hiredis"  # 安装 Boost 和 Hiredis
           C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm make gcc cmake"  # 安装 make, gcc, cmake 工具
 
       # 11. 配置 Redisearch 项目
@@ -95,7 +94,10 @@ jobs:
           if (Test-Path "build") { Remove-Item -Recurse -Force "build" }  # 如果目录存在，则删除
           mkdir build  # 创建构建目录
           cd build
-          cmake -G "MSYS Makefiles" -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_ROOT="C:/tools/msys64/mingw64" -DHIREDIS_DIR="C:/tools/msys64/mingw64" ..  # 设置 CMake 来构建 DLL
+          cmake -G "MSYS Makefiles" -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES \
+                -DBOOST_ROOT="C:/tools/msys64/mingw64" \
+                -DHIREDIS_DIR="C:/tools/msys64/mingw64" \
+                -DHIGHRESEARCH_INCLUDE_DIR="C:/tools/msys64/mingw64/include" ..  # 设置 CMake 来构建 DLL
 
       # 12. 构建 Redisearch
       - name: Build Redisearch
