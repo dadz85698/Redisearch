@@ -94,11 +94,7 @@ jobs:
           if (Test-Path "build") { Remove-Item -Recurse -Force "build" }  # 如果目录存在，则删除
           mkdir build  # 创建构建目录
           cd build
-          cmake -G "MSYS Makefiles" -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES \
-                -DBOOST_ROOT="C:/tools/msys64/mingw64" \
-                -DHIREDIS_DIR="C:/tools/msys64/mingw64" \
-                -DHIGHRESEARCH_INCLUDE_DIR="C:/tools/msys64/mingw64/include" ..  # 设置 CMake 来构建 DLL
-
+          C:\tools\msys64\usr\bin\bash.exe -l -c "cmake -G 'MSYS Makefiles' -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_ROOT='C:/tools/msys64/mingw64' -DHIREDIS_DIR='C:/tools/msys64/mingw64' .."  # 设置 CMake 来构建 DLL
       # 12. 构建 Redisearch
       - name: Build Redisearch
         run: |
