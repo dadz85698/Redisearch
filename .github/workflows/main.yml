@@ -3,10 +3,10 @@ name: Build Redisearch for Windows
 on:
   push:
     branches:
-      - main  # 监控 master 分支的推送
+      - main  # 监控 main 分支的推送
   pull_request:
     branches:
-      - main  # 监控 PR 到 master 分支
+      - main  # 监控 PR 到 main 分支
 
 jobs:
   build:
@@ -24,27 +24,40 @@ jobs:
           git --version  # 打印 git 版本
           where git  # 查看 git 路径
 
-      # 3. 获取远程分支
+      # 3. 检出代码，指定明确的仓库和分支
+      - name: Checkout Redisearch repository
+        uses: actions/checkout@v3  # 使用最新版本 v3
+        with:
+          repository: RediSearch/RediSearch  # 确保仓库名称正确
+          ref: main  # 使用 main 分支
+          token: ${{ secrets.GITHUB_TOKEN }}  # 如果是私有仓库，使用 GitHub Token 认证
+          fetch-depth: 0  # 获取完整历史，避免浅克隆问题
+
+      # 4. 确认仓库是否检出成功
+      - name: Verify repository checkout
+        run: |
+          # 打印当前工作目录
+          echo "Current directory: $(pwd)"
+          # 检查 .git 目录是否存在
+          if (Test-Path ".git") {
+            echo "Git repository exists."
+          } else {
+            echo "Git repository not found."
+            exit 1
+          }
+
+      # 5. 获取远程分支并检查
       - name: Fetch all remote branches
         run: |
           git fetch --all  # 获取所有远程分支和标签
           git branch -r  # 列出远程分支
 
-      # 4. 检出代码，指定明确的仓库和分支
-      - name: Checkout Redisearch repository
-        uses: actions/checkout@v3  # 使用最新版本 v3
-        with:
-          repository: RediSearch/RediSearch  # 确保仓库名称正确
-          ref: master  # 使用 master 分支
-          token: ${{ secrets.GITHUB_TOKEN }}  # 如果是私有仓库，使用 GitHub Token 认证
-          fetch-depth: 0  # 获取完整历史，避免浅克隆问题
-
-      # 5. 列出当前文件，检查仓库是否正确检出
+      # 6. 列出当前文件，检查仓库是否正确检出
       - name: List files after checkout
         run: |
           Get-ChildItem -Force  # 列出当前目录内容
 
-      # 6. 安装 MSYS2 和 Git
+      # 7. 安装 MSYS2 和 Git
       - name: Install MSYS2 and Git
         run: |
           choco install msys2 -y  # 安装 MSYS2
@@ -54,18 +67,18 @@ jobs:
           C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm git"  # 安装 Git
           C:\tools\msys64\usr\bin\bash.exe -l -c "git --version"  # 确认安装成功
 
-      # 7. 克隆 Redis 仓库
+      # 8. 克隆 Redis 仓库
       - name: Clone Redis repository using Windows Git
         run: |
           git clone --single-branch https://github.com/redis/redis.git  # 使用 Windows 安装的 Git
 
-      # 8. 更新 MSYS2 并安装依赖项
+      # 9. 更新 MSYS2 并安装依赖项
       - name: Install Redisearch Dependencies
         run: |
           C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -Syu --noconfirm"  # 更新 MSYS2
           C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm make gcc cmake"  # 安装 make, gcc, cmake 工具
 
-      # 9. 配置 Redisearch 项目
+      # 10. 配置 Redisearch 项目
       - name: Configure Redisearch with CMake
         run: |
           if (Test-Path "build") { Remove-Item -Recurse -Force "build" }  # 如果目录存在，则删除
@@ -73,18 +86,18 @@ jobs:
           cd build
           cmake -G "MSYS Makefiles" -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES ..  # 设置 CMake 来构建 DLL
 
-      # 10. 构建 Redisearch
+      # 11. 构建 Redisearch
       - name: Build Redisearch
         run: |
           cd build
           make  # 编译 Redisearch
 
-      # 11. 列出构建目录中的文件，确保 DLL 文件生成
+      # 12. 列出构建目录中的文件，确保 DLL 文件生成
       - name: List build files after build
         run: |
           Get-ChildItem -Recurse -Force
 
-      # 12. 上传构建产物
+      # 13. 上传构建产物
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4  # 使用最新版的 upload-artifact
         with:
