@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
       - master  # 监控 PR 到 master 分支
-    workflow_dispatch:  # 启用手动触发工作流
 jobs:
   build:
     runs-on: windows-2025  # 使用 Windows Server 2025 环境
