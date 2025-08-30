@@ -43,13 +43,15 @@ jobs:
         run: |
           choco install msys2 -y  # 安装 MSYS2
           refreshenv  # 刷新环境变量
+          
+          # 使用 MSYS2 shell 安装 Git
           C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm git"  # 安装 Git
           C:\tools\msys64\usr\bin\bash.exe -l -c "git --version"  # 确认安装成功
 
       # 6. 克隆 Redis 仓库
-      - name: Clone Redis repository
+      - name: Clone Redis repository using Windows Git
         run: |
-          git clone --single-branch https://github.com/redis/redis.git  # 克隆 Redis 仓库
+          git clone --single-branch https://github.com/redis/redis.git  # 使用 Windows 安装的 Git
 
       # 7. 更新 MSYS2 并安装依赖项
       - name: Install Redisearch Dependencies
