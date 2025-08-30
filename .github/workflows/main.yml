@@ -110,7 +110,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path $boostdir
           'set(HIREDIS_DIR "C:/tools/msys64/mingw64")' | Out-File -Encoding ASCII "$hiredir\hiredis.cmake"
           'set(BOOST_DIR "C:/tools/msys64/mingw64")' | Out-File -Encoding ASCII "$boostdir\boost.cmake"
-          '
+          
       # 11. 配置 Redisearch 项目
       - name: Configure Redisearch with CMake
         run: |
