@@ -104,12 +104,12 @@ jobs:
       # 生成 Redisearch 依赖的 CMake include 文件
       - name: Generate required CMake include files
         run: |
-          C:\tools\msys64\usr\bin\bash.exe -l -c "
+          C:\tools\msys64\usr\bin\bash.exe -l -c '
             mkdir -p /d/a/Redisearch/Redisearch/build/hiredis &&
-            echo 'set(HIREDIS_DIR \"/mingw64\")' > /d/a/Redisearch/Redisearch/build/hiredis/hiredis.cmake &&
+            echo "set(HIREDIS_DIR \"/mingw64\")" > /d/a/Redisearch/Redisearch/build/hiredis/hiredis.cmake &&
             mkdir -p /d/a/Redisearch/Redisearch/build/boost &&
-            echo 'set(BOOST_DIR \"/mingw64\")' > /d/a/Redisearch/Redisearch/build/boost/boost.cmake
-          "
+            echo "set(BOOST_DIR \"/mingw64\")" > /d/a/Redisearch/Redisearch/build/boost/boost.cmake
+          '
       # 11. 配置 Redisearch 项目
       - name: Configure Redisearch with CMake
         run: |
