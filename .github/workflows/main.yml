@@ -1,0 +1,95 @@
+name: Build Redisearch for Windows
+
+on:
+  push:
+    branches:
+      - master  # 监控 master 分支的推送
+  pull_request:
+    branches:
+      - master  # 监控 PR 到 master 分支
+
+jobs:
+  build:
+    runs-on: windows-2025  # 使用 Windows Server 2025 环境
+
+    steps:
+      # 1. 设置调试模式
+      - name: Set up debugging
+        run: |
+          echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
+
+      # 2. 检查 Git 是否正确安装
+      - name: Check Git Version
+        run: |
+          git --version  # 打印 git 版本
+          where git  # 查看 git 路径
+
+      # 3. 检出代码，指定明确的仓库和分支
+      - name: Checkout Redisearch repository
+        uses: actions/checkout@v3  # 使用最新版本 v3
+        with:
+          repository: RediSearch/RediSearch  # 确保仓库名称正确
+          ref: master  # 如果分支是 master，改成 master
+          token: ${{ secrets.GITHUB_TOKEN }}  # 如果是私有仓库，使用 GitHub Token 认证
+          fetch-depth: 0  # 获取完整历史，避免浅克隆问题
+
+      # 4. 列出当前文件，检查仓库是否正确检出
+      - name: List files after checkout
+        run: |
+          Get-ChildItem -Force  # 列出当前目录内容
+
+      # 5. 安装 MSYS2 和构建工具
+      - name: Install MSYS2 and Dependencies
+        run: |
+          choco install msys2 -y  # 安装 MSYS2
+          refreshenv  # 刷新环境变量
+
+          # 通过 msys2_shell.cmd 使用 MSYS2 shell 来执行 pacman
+          echo "Adding MSYS2 to PATH"
+          setx PATH "C:\tools\msys64\usr\bin;%PATH%"  # 手动将 MSYS2 路径添加到环境变量
+          
+          # 使用 MSYS2 shell 执行 pacman
+          C:\tools\msys64\usr\bin\bash.exe -l -c "pacman --version"  # 打印 pacman 版本
+
+      # 6. 更新 MSYS2 并安装基本依赖项
+      - name: Install Dependencies
+        run: |
+          C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -Syu --noconfirm"  # 更新 MSYS2
+          C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm make gcc cmake"  # 安装 make, gcc, cmake 工具
+
+      # 7. 安装 Redisearch 所需的其他依赖项
+      - name: Install Redisearch Dependencies
+        run: |
+          C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm mingw-w64-x86_64-boost"  # 安装 Boost 库
+          C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm mingw-w64-x86_64-cmake"  # 安装 CMake
+
+      # 8. 手动安装 Redis（跳过 MSYS2 包）
+      - name: Install Redis from Source
+        run: |
+          C:\tools\msys64\usr\bin\bash.exe -l -c "git clone --single-branch https://github.com/redis/redis.git"  # 克隆 Redis 仓库
+          C:\tools\msys64\usr\bin\bash.exe -l -c "cd redis && make"  # 编译 Redis
+
+      # 9. 配置 Redisearch 项目
+      - name: Configure Redisearch with CMake
+        run: |
+          mkdir build  # 创建构建目录
+          cd build
+          cmake -G "MSYS Makefiles" -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES ..  # 设置 CMake 来构建 DLL
+
+      # 10. 构建 Redisearch
+      - name: Build Redisearch
+        run: |
+          cd build
+          make  # 编译 Redisearch
+
+      # 11. 列出构建目录中的文件，确保 DLL 文件生成
+      - name: List build files after build
+        run: |
+          Get-ChildItem -Recurse -Force
+
+      # 12. 上传构建产物
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4  # 使用最新版的 upload-artifact
+        with:
+          name: redisearch-windows-build  # 指定构建产物的名称
+          path: build/  # 上传构建目录中的文件
