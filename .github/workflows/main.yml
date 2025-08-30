@@ -94,7 +94,7 @@ jobs:
           if (Test-Path "build") { Remove-Item -Recurse -Force "build" }  # 如果目录存在，则删除
           mkdir build  # 创建构建目录
           cd build
-          C:\tools\msys64\usr\bin\bash.exe -l -c "cmake -G 'Unix Makefiles' -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_ROOT='C:/tools/msys64/mingw64' -DHIREDIS_DIR='C:/tools/msys64/mingw64' -DCMAKE_SOURCE_DIR='D:/a/Redisearch/Redisearch'"  # 使用 Unix Makefiles 生成器
+          C:\tools\msys64\usr\bin\bash.exe -l -c "cmake -G 'Unix Makefiles' -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_ROOT='C:/tools/msys64/mingw64' -DHIREDIS_DIR='C:/tools/msys64/mingw64' -DCMAKE_SOURCE_DIR='D:/a/Redisearch/Redisearch' -DCMAKE_BINARY_DIR='D:/a/Redisearch/Redisearch/build' .."  # 使用 Unix Makefiles 生成器
       # 12. 构建 Redisearch
       - name: Build Redisearch
         run: |
