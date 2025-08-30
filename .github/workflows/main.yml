@@ -79,7 +79,7 @@ jobs:
 
       - name: Clone VectorSimilarity repository
         run: |
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Redisearch/VectorSimilarity.git D:/a/Redisearch/Redisearch/deps/VectorSimilarity
+          git clone https://github.com/RedisAI/VectorSimilarity.git D:/a/Redisearch/Redisearch/deps/VectorSimilarity
 
       # 10. 更新 MSYS2 并安装依赖项
       - name: Install Redisearch Dependencies
