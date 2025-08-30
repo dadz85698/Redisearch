@@ -89,19 +89,31 @@ jobs:
           C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm make gcc cmake"  # 安装 make, gcc, cmake 工具
 
       # 11. 配置 Redisearch 项目
+      #- name: Configure Redisearch with CMake
+      #  run: |
+      #    if (Test-Path "build") { Remove-Item -Recurse -Force "build" }  # 如果目录存在，则删除
+      #    mkdir build  # 创建构建目录
+      #    cd build
+      #    #C:\tools\msys64\usr\bin\bash.exe -l -c "cmake -G 'MinGW Makefiles' -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_ROOT='C:/tools/msys64/mingw64' -DHIREDIS_DIR='C:/tools/msys64/mingw64' -DCMAKE_SOURCE_DIR='D:/a/Redisearch/Redisearch' -DCMAKE_BINARY_DIR='D:/a/Redisearch/Redisearch/build' .."  # 使用 Unix Makefiles 生成器
+      #    cmake -G "MinGW Makefiles" -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -D BOOST_ROOT="C:/tools/msys64/mingw64" -D HIREDIS_DIR="C:/tools/msys64/mingw64" -DCMAKE_SOURCE_DIR="D:/a/Redisearch/Redisearch" -DCMAKE_BINARY_DIR="D:/a/Redisearch/Redisearch/build" ..
+      # 12. 构建 Redisearch
+      #- name: Build Redisearch
+      #  run: |
+      #    cd build
+      #    make  # 编译 Redisearch
+      # 11. 配置 Redisearch 项目
       - name: Configure Redisearch with CMake
         run: |
-          if (Test-Path "build") { Remove-Item -Recurse -Force "build" }  # 如果目录存在，则删除
-          mkdir build  # 创建构建目录
+          if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
+          mkdir build
           cd build
-          #C:\tools\msys64\usr\bin\bash.exe -l -c "cmake -G 'Unix Makefiles' -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_ROOT='C:/tools/msys64/mingw64' -DHIREDIS_DIR='C:/tools/msys64/mingw64' -DCMAKE_SOURCE_DIR='D:/a/Redisearch/Redisearch' -DCMAKE_BINARY_DIR='D:/a/Redisearch/Redisearch/build' .."  # 使用 Unix Makefiles 生成器
-          cmake -G "MinGW Makefiles" -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -D BOOST_ROOT="C:/tools/msys64/mingw64" -D HIREDIS_DIR="C:/tools/msys64/mingw64" -DCMAKE_SOURCE_DIR="D:/a/Redisearch/Redisearch" -DCMAKE_BINARY_DIR="D:/a/Redisearch/Redisearch/build" ..
+          C:\tools\msys64\usr\bin\bash.exe -l -c "export PATH=/mingw64/bin:/usr/bin:\$PATH && cmake -G 'Unix Makefiles' -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_ROOT=/mingw64 -DHIREDIS_DIR=/mingw64 .."
+
       # 12. 构建 Redisearch
       - name: Build Redisearch
         run: |
           cd build
-          make  # 编译 Redisearch
-
+          C:\tools\msys64\usr\bin\bash.exe -l -c "export PATH=/mingw64/bin:/usr/bin:\$PATH && make"
       # 13. 列出构建目录中的文件，确保 DLL 文件生成
       - name: List build files after build
         run: |
