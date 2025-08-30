@@ -72,7 +72,16 @@ jobs:
         run: |
           git clone --single-branch https://github.com/redis/redis.git  # 使用 Windows 安装的 Git
 
-      # 9. 更新 MSYS2 并安装依赖项
+      # 9. 克隆 libuv 和 VectorSimilarity 仓库
+      - name: Clone libuv repository
+        run: |
+          git clone https://github.com/libuv/libuv.git D:/a/Redisearch/Redisearch/deps/libuv
+
+      - name: Clone VectorSimilarity repository
+        run: |
+          git clone https://github.com/Redisearch/VectorSimilarity.git D:/a/Redisearch/Redisearch/deps/VectorSimilarity
+
+      # 10. 更新 MSYS2 并安装依赖项
       - name: Install Redisearch Dependencies
         run: |
           # 安装 Boost 和 Hiredis 依赖
@@ -80,26 +89,26 @@ jobs:
           C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -Syu --noconfirm"  # 更新 MSYS2
           C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm make gcc cmake"  # 安装 make, gcc, cmake 工具
 
-      # 10. 配置 Redisearch 项目
+      # 11. 配置 Redisearch 项目
       - name: Configure Redisearch with CMake
         run: |
           if (Test-Path "build") { Remove-Item -Recurse -Force "build" }  # 如果目录存在，则删除
           mkdir build  # 创建构建目录
           cd build
-          cmake -G "MSYS Makefiles" -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_DIR="C:/tools/msys64/mingw64/include" -DHIREDIS_DIR="C:/tools/msys64/mingw64/include" ..  # 设置 CMake 来构建 DLL
+          cmake -G "MSYS Makefiles" -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_ROOT="C:/tools/msys64/mingw64" -DHIREDIS_DIR="C:/tools/msys64/mingw64" ..  # 设置 CMake 来构建 DLL
 
-      # 11. 构建 Redisearch
+      # 12. 构建 Redisearch
       - name: Build Redisearch
         run: |
           cd build
           make  # 编译 Redisearch
 
-      # 12. 列出构建目录中的文件，确保 DLL 文件生成
+      # 13. 列出构建目录中的文件，确保 DLL 文件生成
       - name: List build files after build
         run: |
           Get-ChildItem -Recurse -Force
 
-      # 13. 上传构建产物
+      # 14. 上传构建产物
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4  # 使用最新版的 upload-artifact
         with:
