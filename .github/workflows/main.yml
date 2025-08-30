@@ -3,10 +3,10 @@ name: Build Redisearch for Windows
 on:
   push:
     branches:
-      - master  # 监控 master 分支的推送
+      - main  # 监控 master 分支的推送
   pull_request:
     branches:
-      - master  # 监控 PR 到 master 分支
+      - main  # 监控 PR 到 master 分支
 
 jobs:
   build:
