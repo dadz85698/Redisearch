@@ -120,7 +120,7 @@ jobs:
           #if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
           #mkdir build
           cd build
-          C:\tools\msys64\usr\bin\bash.exe -l -c "export PATH=/mingw64/bin:/usr/bin:\$PATH && cmake -G 'Unix Makefiles' -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_ROOT=/mingw64 -DHIREDIS_DIR=/mingw64 -DCMAKE_SOURCE_DIR=/d/a/Redisearch/Redisearch -DCMAKE_BINARY_DIR=/d/a/Redisearch/Redisearch/build -Wno-dev -DCMAKE_POLICY_DEFAULT_CMP0144=NEW  -DCMAKE_POLICY_DEFAULT_CMP0167=NEW"
+          C:\tools\msys64\usr\bin\bash.exe -l -c "export PATH=/mingw64/bin:/usr/bin:\$PATH && cmake -G 'Unix Makefiles' -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_ROOT=/mingw64 -DHIREDIS_DIR=/mingw64 -Wno-dev -DCMAKE_POLICY_DEFAULT_CMP0144=NEW  -DCMAKE_POLICY_DEFAULT_CMP0167=NEW /d/a/Redisearch/Redisearch"
 
       # 12. 构建 Redisearch
       - name: Build Redisearch
