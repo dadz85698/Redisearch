@@ -166,7 +166,8 @@ jobs:
           grep -rl "%zu" D:/a/Redisearch/Redisearch/src | while read -r file; do
             sed -i 's/%zu/%llu/g' "$file"
           done
-      
+          # srand48 / lrand48 替换
+          sed -i '1i #ifdef _WIN32\n#define srand48(x) srand((unsigned)(x))\n#define lrand48() ((long)rand())\n#endif' D:/a/Redisearch/Redisearch/src/cursor.c
           echo "Windows compatibility patch applied successfully."
         shell: bash
       # 11. 配置 Redisearch 项目
