@@ -139,8 +139,8 @@ jobs:
           # 替换 CLOCK_MONOTONIC_RAW
           sed -i 's|CLOCK_MONOTONIC_RAW|CLOCK_MONOTONIC|' D:/a/Redisearch/Redisearch/src/util/timeout.h
       
-          # Windows 时间函数替换
-          sed -i '1i #ifdef _WIN32\n#define gmtime_r(timep, result) gmtime_s(result, timep)\n#include <time.h>\nstatic time_t timegm(struct tm *tm) { _mkgmtime(tm); }\n#endif' D:/a/Redisearch/Redisearch/src/aggregate/functions/date.c
+          # Windows 时间函数替换（gmtime_r / timegm / strptime）
+          sed -i '1i #ifdef _WIN32\n#define gmtime_r(timep, result) gmtime_s(result, timep)\n#include <time.h>\nstatic time_t timegm(struct tm *tm) { return _mkgmtime(tm); }\nchar* strptime(const char* buf, const char* fmt, struct tm* tm) {\n int y, m, d, H, M, S;\n if (sscanf(buf, "%d-%d-%d %d:%d:%d", &y, &m, &d, &H, &M, &S) != 6) return NULL;\n tm->tm_year = y - 1900;\n tm->tm_mon = m - 1;\n tm->tm_mday = d;\n tm->tm_hour = H;\n tm->tm_min = M;\n tm->tm_sec = S;\n return (char*)buf + strlen(buf);\n}\n#endif' D:/a/Redisearch/Redisearch/src/aggregate/functions/date.c
         shell: bash
       # 11. 配置 Redisearch 项目
       - name: Configure Redisearch with CMake
