@@ -121,14 +121,17 @@ jobs:
       # Patch Windows headers
       - name: Patch Windows compatibility
         run: |
-          # arr.h 中定义 MAX
+          # arr.h 定义 MAX
           sed -i '1i #ifndef MAX\n#define MAX(a,b) ((a) > (b) ? (a) : (b))\n#endif' D:/a/Redisearch/Redisearch/src/util/arr/arr.h
-      
+
           # buffer.h 替换 arpa/inet.h
           sed -i 's|#include <arpa/inet.h>|#ifdef _WIN32\n#include <winsock2.h>\n#include <ws2tcpip.h>\n#else\n#include <arpa/inet.h>\n#endif|' D:/a/Redisearch/Redisearch/src/buffer/buffer.h
-      
+
           # strconv.h 替换 sys/errno.h
           sed -i 's|#include <sys/errno.h>|#ifdef _WIN32\n#include <errno.h>\n#else\n#include <sys/errno.h>\n#endif|' D:/a/Redisearch/Redisearch/src/util/strconv.h
+
+          # fork_gc.h 替换 poll.h
+          sed -i 's|#include <poll.h>|#ifdef _WIN32\n// poll.h Windows 下无需或使用 WSAPoll\n#else\n#include <poll.h>\n#endif|' D:/a/Redisearch/Redisearch/src/fork_gc.h
         shell: bash
       # 11. 配置 Redisearch 项目
       - name: Configure Redisearch with CMake
