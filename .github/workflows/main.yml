@@ -117,8 +117,8 @@ jobs:
       # 11. 配置 Redisearch 项目
       - name: Configure Redisearch with CMake
         run: |
-          if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
-          mkdir build
+          #if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
+          #mkdir build
           cd build
           C:\tools\msys64\usr\bin\bash.exe -l -c "export PATH=/mingw64/bin:/usr/bin:\$PATH && cmake -G 'Unix Makefiles' -D CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=YES -DBOOST_ROOT=/mingw64 -DHIREDIS_DIR=/mingw64 /d/a/Redisearch/Redisearch"
 
