@@ -78,13 +78,13 @@ jobs:
           git clone --single-branch https://github.com/redis/redis.git  # 使用 Windows 安装的 Git
 
       # 9. 克隆 libuv 和 VectorSimilarity 仓库
-      - name: Clone libuv repository
-        run: |
-          git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/libuv/libuv.git D:/a/Redisearch/Redisearch/deps/libuv
+      #- name: Clone libuv repository
+      #  run: |
+      #    git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/libuv/libuv.git D:/a/Redisearch/Redisearch/deps/libuv
 
-      - name: Clone VectorSimilarity repository
-        run: |
-          git clone https://github.com/RedisAI/VectorSimilarity.git D:/a/Redisearch/Redisearch/deps/VectorSimilarity
+      #- name: Clone VectorSimilarity repository
+      #  run: |
+      #    git clone https://github.com/RedisAI/VectorSimilarity.git D:/a/Redisearch/Redisearch/deps/VectorSimilarity
 
       # 10. 安装 Redisearch 依赖
       - name: Install Redisearch Dependencies
