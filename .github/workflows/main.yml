@@ -143,7 +143,8 @@ jobs:
       
           # Windows 时间函数替换（gmtime_r / timegm / strptime）
           sed -i '1i #ifdef _WIN32\n#include <time.h>\n#include <stdio.h>\n#include <string.h>\n#define gmtime_r(timep, result) gmtime_s(result, timep)\nstatic time_t timegm(struct tm *tm) { return _mkgmtime(tm); }\nchar* strptime(const char* buf, const char* fmt, struct tm* tm) {\n int y, m, d, H, M, S;\n if (sscanf(buf, "%d-%d-%d %d:%d:%d", &y, &m, &d, &H, &M, &S) != 6) return NULL;\n tm->tm_year = y - 1900;\n tm->tm_mon = m - 1;\n tm->tm_mday = d;\n tm->tm_hour = H;\n tm->tm_min = M;\n tm->tm_sec = S;\n return (char*)buf + strlen(buf);\n}\n#endif' D:/a/Redisearch/Redisearch/src/aggregate/functions/date.c
-      
+          # 修复 RedisModuleSDK 指针转换 warning
+          sed -i 's|(unsigned long)getapifuncptr|(uintptr_t)getapifuncptr|' D:/a/Redisearch/Redisearch/deps/RedisModulesSDK/redismodule.h
           echo "Windows compatibility patch applied successfully."
         shell: bash
       # 11. 配置 Redisearch 项目
