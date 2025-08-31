@@ -123,7 +123,8 @@ jobs:
         run: |
           # 定义 MAX 宏
           sed -i '1i #ifndef MAX\n#define MAX(a,b) ((a) > (b) ? (a) : (b))\n#endif' D:/a/Redisearch/Redisearch/src/util/arr/arr.h
-
+          # 定义 MIN 宏
+          sed -i '1i #ifndef MIN\n#define MIN(a,b) ((a) < (b) ? (a) : (b))\n#endif' D:/a/Redisearch/Redisearch/src/aggregate/aggregate_exec.c
           # 替换 POSIX 头文件
           sed -i 's|#include <arpa/inet.h>|#ifdef _WIN32\n#include <winsock2.h>\n#include <ws2tcpip.h>\n#else\n#include <arpa/inet.h>\n#endif|' D:/a/Redisearch/Redisearch/src/buffer/buffer.h
           sed -i 's|#include <sys/errno.h>|#ifdef _WIN32\n#include <errno.h>\n#else\n#include <sys/errno.h>\n#endif|' D:/a/Redisearch/Redisearch/src/util/strconv.h
