@@ -33,6 +33,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}  # 如果是私有仓库，使用 GitHub Token 认证
           fetch-depth: 0  # 获取完整历史，避免浅克隆问题
 
+      # 3.1 初始化并更新子模块
+      - name: Initialize and update submodules
+        run: |
+          git submodule update --init --recursive
+
       # 4. 确认仓库是否检出成功
       - name: Verify repository checkout
         run: |
